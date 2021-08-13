@@ -1,7 +1,7 @@
 const Customer = require('../models/customer.model');
 
 async function getCustomersByTime(start, end) {
-    return await Customer.find({ createdAt: { $gte: start, $lte: end } }).exec();
+    return await Customer.find({ createdAt: { $gte: parseInt(start), $lte: parseInt(end) } }).exec();
 }
 
 function addCustomers(customers) {

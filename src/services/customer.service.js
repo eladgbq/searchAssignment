@@ -1,4 +1,4 @@
-const ObjectsToCsv  = require('objects-to-csv');
+const ObjectsToCsv = require('objects-to-csv');
 const customersAccess = require('../data-access/customers.access');
 const fs = require('fs');
 const conf = require('../conf/conf');
@@ -24,27 +24,28 @@ async function searchCustomers(start, end) {
  * @param {*} searchRes array of customers returned by the search
  */
 async function saveSearchToFile(searchRes) {
-    if(!latestSearch) {
-        latestSearch = await getLatestSearch();
+    if (!latestSearch) {
+        latestSearch = (await getLatestSearch());
     }
+    latestSearch++;
     const csv = new ObjectsToCsv(searchRes);
 
-    const filePath = conf.searchDirPath + '/' + conf.searchFilePrefix + latestSearch
+    const filePath = conf.searchDirPath + '/' + conf.searchFilePrefix + latestSearch + '.csv'
     await csv.toDisk(filePath);
     return filePath;
 }
 
 function getLatestSearch() {
     return new Promise((resolve, reject) => {
-        fs.readdir('../../' + conf.searchDirPath, (err, files) => {
-            if(err) {
-                reject(err);
+        fs.readdir(conf.searchDirPath, (err, files) => {
+            if (err) {
+                return reject(err);
             }
-            if(files.length === 0) {
-                resolve(1);
+            if (!files || files.length === 0) {
+                return resolve(0);
             }
-            files = files.map(file => file.slice(conf.searchFilePrefix.length)).filter(file => !isNaN(file));
-            resolve(Math.max(...files));
+            files = files.map(file => file.slice(conf.searchFilePrefix.length, -5)).filter(file => !isNaN(file));
+            return resolve(parseInt(Math.max(...files)));
         });
     });
 }
