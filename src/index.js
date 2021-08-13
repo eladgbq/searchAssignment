@@ -1,5 +1,7 @@
 const express = require('express');
-const search = require('./routes/search.routes');
+const search = require('./routes/search.route');
+const mongoose = require('mongoose');
+mongoose.connect(require('./conf/conf').dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const PORT = process.env.PORT || 3000;
 
