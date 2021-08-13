@@ -7,6 +7,10 @@ mongoose.connect(require('./src/conf/conf').dbUrl, {useNewUrlParser: true, useUn
 let data = parse(fs.readFileSync('./data.csv').toString(), {
     columns: true,
     skip_empty_lines: true
-}).filter(doc => doc.createdAt !== '');
+}).filter(doc => doc.createdAt !== '')
+.map(doc => {
+    doc.createdAt = parseInt(doc.createdAt);
+    return doc;
+});
 
 customerAccess.addCustomers(data);
